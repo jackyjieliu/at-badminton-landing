@@ -1,0 +1,172 @@
+.home-page {
+  min-height: 100vh;
+}
+
+/* Hero - reuse HeroSection styles */
+.home-hero {
+  position: relative;
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 80px 24px 40px;
+}
+
+.home-hero-desc {
+  color: var(--color-text-dim);
+  font-size: 1.1rem;
+  letter-spacing: 3px;
+  margin-top: 16px;
+  font-family: var(--font-heading);
+}
+
+/* Section */
+.home-section {
+  padding: 80px 0;
+}
+
+/* Tournament card grid */
+.tournament-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.tournament-card {
+  position: relative;
+  display: block;
+  padding: 32px 28px;
+  border-radius: 20px;
+  background: rgba(0, 240, 255, 0.04);
+  border: 1px solid rgba(0, 240, 255, 0.12);
+  text-decoration: none;
+  color: inherit;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.tournament-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  border-color: var(--color-primary);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4), 0 0 40px var(--color-primary-glow);
+}
+
+.tc-glow {
+  position: absolute;
+  top: -40%;
+  right: -20%;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(0, 240, 255, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+.tournament-card:hover .tc-glow {
+  opacity: 1.5;
+}
+
+.tc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.tc-date {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  letter-spacing: 2px;
+}
+
+.tc-badge {
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-secondary);
+  border: 1px solid rgba(255, 62, 108, 0.2);
+  background: rgba(255, 62, 108, 0.08);
+  letter-spacing: 1px;
+}
+
+.tc-title {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--color-text-bright);
+  margin-bottom: 6px;
+  letter-spacing: 2px;
+}
+
+.tc-subtitle {
+  color: var(--color-text-dim);
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+}
+
+.tc-info {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.tc-info span {
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-dim);
+  letter-spacing: 1px;
+  padding: 4px 12px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.tc-arrow {
+  position: absolute;
+  bottom: 20px;
+  right: 24px;
+  color: var(--color-primary);
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: all 0.3s ease;
+}
+.tournament-card:hover .tc-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.tournament-card .card-corner {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-color: var(--color-primary);
+  opacity: 0.15;
+  transition: opacity 0.3s ease;
+}
+.tournament-card:hover .card-corner {
+  opacity: 0.4;
+}
+.tournament-card .card-corner.top-right {
+  top: 8px;
+  right: 8px;
+  border-top: 2px solid;
+  border-right: 2px solid;
+  border-color: inherit;
+}
+.tournament-card .card-corner.bottom-left {
+  bottom: 8px;
+  left: 8px;
+  border-bottom: 2px solid;
+  border-left: 2px solid;
+  border-color: inherit;
+}
+
+@media (max-width: 480px) {
+  .tournament-grid {
+    grid-template-columns: 1fr;
+  }
+}
