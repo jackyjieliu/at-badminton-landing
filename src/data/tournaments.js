@@ -128,7 +128,7 @@ export const tournaments = {
         '混雙三組互相對打',
         '4 支男雙各遇混雙 2 次',
         '家睿 & Andy 遇混雙 1 次（對手為 Hubert & Esther）',
-        '男雙之間互相對打',
+        '男雙之間對打（部分組別不對打）',
       ],
       rounds: [
         {
@@ -163,48 +163,41 @@ export const tournaments = {
           round: 5,
           matches: [
             { court: 'A', team1: 'Hubert & Esther', team1Type: 'mixed', team2: '1000 & 小明', team2Type: 'mens' },
-            { court: 'B', team1: 'Jacky & 茄子', team1Type: 'mixed', team2: 'Angela & Leo', team2Type: 'mixed' },
+            { court: 'B', team1: '國翔 & 俊廷', team1Type: 'mens', team2: 'Matthew & Eric', team2Type: 'mens' },
           ],
         },
         {
           round: 6,
           matches: [
-            { court: 'A', team1: 'Alex & Robert', team1Type: 'mens', team2: '家睿 & Andy', team2Type: 'mens' },
-            { court: 'B', team1: '國翔 & 俊廷', team1Type: 'mens', team2: 'Matthew & Eric', team2Type: 'mens' },
+            { court: 'A', team1: 'Jacky & 茄子', team1Type: 'mixed', team2: 'Angela & Leo', team2Type: 'mixed' },
+            { court: 'B', team1: 'Alex & Robert', team1Type: 'mens', team2: '家睿 & Andy', team2Type: 'mens' },
           ],
         },
         {
           round: 7,
           matches: [
             { court: 'A', team1: 'Hubert & Esther', team1Type: 'mixed', team2: 'Alex & Robert', team2Type: 'mens' },
-            { court: 'B', team1: '1000 & 小明', team1Type: 'mens', team2: '國翔 & 俊廷', team2Type: 'mens' },
+            { court: 'B', team1: '1000 & 小明', team1Type: 'mens', team2: 'Matthew & Eric', team2Type: 'mens' },
           ],
         },
         {
           round: 8,
           matches: [
             { court: 'A', team1: 'Jacky & 茄子', team1Type: 'mixed', team2: '國翔 & 俊廷', team2Type: 'mens' },
-            { court: 'B', team1: 'Angela & Leo', team1Type: 'mixed', team2: 'Matthew & Eric', team2Type: 'mens' },
+            { court: 'B', team1: 'Angela & Leo', team1Type: 'mixed', team2: '1000 & 小明', team2Type: 'mens' },
           ],
         },
         {
           round: 9,
           matches: [
             { court: 'A', team1: 'Hubert & Esther', team1Type: 'mixed', team2: '家睿 & Andy', team2Type: 'mens' },
-            { court: 'B', team1: 'Alex & Robert', team1Type: 'mens', team2: 'Matthew & Eric', team2Type: 'mens' },
+            { court: 'B', team1: 'Jacky & 茄子', team1Type: 'mixed', team2: 'Alex & Robert', team2Type: 'mens' },
           ],
         },
         {
           round: 10,
           matches: [
-            { court: 'A', team1: 'Jacky & 茄子', team1Type: 'mixed', team2: 'Alex & Robert', team2Type: 'mens' },
-            { court: 'B', team1: 'Angela & Leo', team1Type: 'mixed', team2: '1000 & 小明', team2Type: 'mens' },
-          ],
-        },
-        {
-          round: 11,
-          matches: [
-            { court: 'A', team1: '1000 & 小明', team1Type: 'mens', team2: 'Matthew & Eric', team2Type: 'mens' },
+            { court: 'A', team1: 'Angela & Leo', team1Type: 'mixed', team2: 'Matthew & Eric', team2Type: 'mens' },
             { court: 'B', team1: '國翔 & 俊廷', team1Type: 'mens', team2: '家睿 & Andy', team2Type: 'mens' },
           ],
         },

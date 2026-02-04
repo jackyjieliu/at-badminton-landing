@@ -195,7 +195,7 @@ export default function ScheduleSection({ data }) {
       <div className="schedule-flow">
         <div className="flow-step">
           <div className="flow-dot active" />
-          <span>預賽 11 輪</span>
+          <span>預賽 {timedRounds.length} 輪</span>
         </div>
         <div className="flow-connector" />
         <div className="flow-step">
