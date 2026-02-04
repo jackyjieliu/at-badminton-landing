@@ -1,5 +1,6 @@
 import { useParams } from 'react-router-dom'
 import { tournaments } from '../data/tournaments'
+import useSheetScores from '../hooks/useSheetScores'
 import Navbar from '../components/Navbar'
 import MusicPlayer from '../components/MusicPlayer'
 import ShuttlecockBg from '../components/ShuttlecockBg'
@@ -16,6 +17,7 @@ import './TournamentPage.css'
 export default function TournamentPage() {
   const { date } = useParams()
   const data = tournaments[date]
+  const { scores, updateScore } = useSheetScores(data?.sheetScriptUrl)
 
   if (!data) {
     return (
@@ -47,7 +49,7 @@ export default function TournamentPage() {
       </AnimatedSection>
 
       <AnimatedSection id="schedule" className="section">
-        <ScheduleSection data={data} />
+        <ScheduleSection data={data} scores={scores} updateScore={updateScore} />
       </AnimatedSection>
 
       <AnimatedSection id="more" className="section">

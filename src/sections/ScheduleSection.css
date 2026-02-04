@@ -151,6 +151,9 @@
   padding: 12px 20px;
   transition: all 0.2s;
 }
+.match-row.has-score {
+  background: rgba(0, 240, 255, 0.02);
+}
 .match-row:not(:last-child) {
   border-bottom: 1px solid rgba(255, 255, 255, 0.03);
 }
@@ -212,6 +215,13 @@
   border: 1px solid rgba(0, 240, 255, 0.3);
 }
 
+.match-score-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 60px;
+}
+
 .match-vs {
   font-family: var(--font-display);
   font-size: 0.6rem;
@@ -221,6 +231,98 @@
   padding: 2px 8px;
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.04);
+}
+
+/* Score display */
+.score-display {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.score-winner {
+  color: var(--color-primary);
+  text-shadow: 0 0 8px var(--color-primary-glow);
+}
+.score-loser {
+  color: var(--color-text-dim);
+}
+.score-separator {
+  color: var(--color-text-dim);
+  margin: 0 2px;
+}
+.score-empty {
+  color: var(--color-text-dim);
+  font-size: 0.8rem;
+}
+
+/* Team won/lost highlight */
+.match-team.team-won {
+  color: var(--color-primary);
+}
+.match-team.team-lost {
+  opacity: 0.5;
+}
+
+/* Score input (admin mode) */
+.score-input-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.score-input {
+  width: 40px;
+  height: 30px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--color-text-bright);
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.2s;
+  -moz-appearance: textfield;
+}
+.score-input::-webkit-outer-spin-button,
+.score-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.score-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 8px var(--color-primary-glow);
+}
+.score-colon {
+  color: var(--color-text-dim);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+.score-save-btn {
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--color-primary);
+  border-radius: 6px;
+  background: var(--color-primary-dim);
+  color: var(--color-primary);
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.score-save-btn:hover:not(:disabled) {
+  background: var(--color-primary);
+  color: var(--color-bg);
+}
+.score-save-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 /* Finals bracket */
@@ -283,6 +385,83 @@
   font-size: 0.7rem;
   letter-spacing: 2px;
   color: var(--color-text-dim);
+}
+
+.final-team.final-won .seed {
+  color: var(--color-primary);
+  text-shadow: 0 0 8px var(--color-primary-glow);
+}
+.final-team.final-lost .seed {
+  opacity: 0.5;
+}
+
+/* Standings table */
+.standings-table {
+  max-width: 600px;
+  margin: 0 auto;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.standings-header {
+  display: grid;
+  grid-template-columns: 40px 1fr repeat(4, 50px);
+  padding: 10px 20px;
+  background: rgba(0, 240, 255, 0.04);
+  border-bottom: 1px solid var(--color-border);
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--color-text-dim);
+}
+
+.standings-row {
+  display: grid;
+  grid-template-columns: 40px 1fr repeat(4, 50px);
+  padding: 10px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  transition: background 0.2s;
+}
+.standings-row:last-child {
+  border-bottom: none;
+}
+.standings-row:hover {
+  background: rgba(0, 0, 0, 0.15);
+}
+.standings-row.qualified {
+  background: rgba(0, 240, 255, 0.03);
+}
+.standings-row.qualified .standings-rank {
+  color: var(--color-primary);
+}
+
+.standings-rank {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 900;
+  color: var(--color-text-dim);
+  text-align: center;
+}
+
+.standings-name {
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.standings-stat {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-text-dim);
+  text-align: center;
+}
+.standings-stat.win {
+  color: var(--color-primary);
 }
 
 /* Flow timeline */

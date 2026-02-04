@@ -24,6 +24,7 @@ export const tournaments = {
     venue: '',
     maxTeams: 8,
     entryFee: 200,
+    sheetScriptUrl: 'https://script.google.com/macros/s/AKfycby1WDW6J2-PDbrtlVt8K7sGFn4PjobkCLu3V3m1EZ5PI6scAgP3W3whADQOdZBnd7WOIw/exec',
     rules: {
       groupStage: {
         points: 15,
