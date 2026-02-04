@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import './ScheduleSection.css'
 
 const WARMUP_MINUTES = 5
@@ -60,11 +60,16 @@ function computeRoundTimings(rounds) {
 
 export default function ScheduleSection({ data }) {
   const { schedule } = data
+  const [selectedTeam, setSelectedTeam] = useState(null)
 
   const timedRounds = useMemo(
     () => computeRoundTimings(schedule.rounds),
     [schedule.rounds]
   )
+
+  const handleTeamClick = (teamName) => {
+    setSelectedTeam((prev) => (prev === teamName ? null : teamName))
+  }
 
   const lastRound = timedRounds[timedRounds.length - 1]
 
@@ -116,44 +121,62 @@ export default function ScheduleSection({ data }) {
         </div>
 
         <div className="rounds-list">
-          {timedRounds.map((round) => (
-            <div key={round.round} className="round-card">
-              <div className="round-header">
-                <span className="round-number">R{round.round}</span>
-                <div className="round-time-info">
-                  {round.hasWarmup && (
-                    <span className="warmup-badge">
-                      {round.warmupStart} 熱身
-                    </span>
-                  )}
-                  <span className="time-badge">
-                    {round.matchStart} 開始
-                  </span>
-                </div>
-              </div>
-              {round.hasWarmup && (
-                <div className="warmup-note">
-                  首次上場：{round.newTeams.join('、')}
-                </div>
-              )}
-              <div className="round-matches">
-                {round.matches.map((match, mi) => (
-                  <div key={mi} className="match-row">
-                    <span className="court-label">{match.court}</span>
-                    <span className="match-team left">
-                      <TypeBadge type={match.team1Type} />
-                      {match.team1}
-                    </span>
-                    <span className="match-vs">VS</span>
-                    <span className="match-team right">
-                      {match.team2}
-                      <TypeBadge type={match.team2Type} />
+          {timedRounds.map((round) => {
+            const roundHasSelected = selectedTeam && round.matches.some(
+              (m) => m.team1 === selectedTeam || m.team2 === selectedTeam
+            )
+            const roundDimmed = selectedTeam && !roundHasSelected
+
+            return (
+              <div key={round.round} className={`round-card${roundDimmed ? ' round-card--dimmed' : ''}`}>
+                <div className="round-header">
+                  <span className="round-number">R{round.round}</span>
+                  <div className="round-time-info">
+                    {round.hasWarmup && (
+                      <span className="warmup-badge">
+                        {round.warmupStart} 熱身
+                      </span>
+                    )}
+                    <span className="time-badge">
+                      {round.matchStart} 開始
                     </span>
                   </div>
-                ))}
+                </div>
+                {round.hasWarmup && (
+                  <div className="warmup-note">
+                    首次上場：{round.newTeams.join('、')}
+                  </div>
+                )}
+                <div className="round-matches">
+                  {round.matches.map((match, mi) => {
+                    const matchHasSelected = selectedTeam && (match.team1 === selectedTeam || match.team2 === selectedTeam)
+                    const matchDimmed = selectedTeam && !matchHasSelected
+
+                    return (
+                      <div key={mi} className={`match-row${matchHasSelected ? ' match-row--active' : ''}${matchDimmed ? ' match-row--dimmed' : ''}`}>
+                        <span className="court-label">{match.court}</span>
+                        <span
+                          className={`match-team left team-clickable${selectedTeam === match.team1 ? ' team-selected' : ''}`}
+                          onClick={() => handleTeamClick(match.team1)}
+                        >
+                          <TypeBadge type={match.team1Type} />
+                          {match.team1}
+                        </span>
+                        <span className="match-vs">VS</span>
+                        <span
+                          className={`match-team right team-clickable${selectedTeam === match.team2 ? ' team-selected' : ''}`}
+                          onClick={() => handleTeamClick(match.team2)}
+                        >
+                          {match.team2}
+                          <TypeBadge type={match.team2Type} />
+                        </span>
+                      </div>
+                    )
+                  })}
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
 
