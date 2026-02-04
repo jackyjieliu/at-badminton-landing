@@ -181,11 +181,16 @@ export default function ScheduleSection({ data, scores, updateScore }) {
   const { schedule } = data
   const [searchParams] = useSearchParams()
   const isAdmin = searchParams.get('admin') === 'true'
+  const [selectedTeam, setSelectedTeam] = useState(null)
 
   const timedRounds = useMemo(
     () => computeRoundTimings(schedule.rounds),
     [schedule.rounds]
   )
+
+  const handleTeamClick = (teamName) => {
+    setSelectedTeam((prev) => (prev === teamName ? null : teamName))
+  }
 
   const lastRound = timedRounds[timedRounds.length - 1]
 
@@ -256,63 +261,78 @@ export default function ScheduleSection({ data, scores, updateScore }) {
         </div>
 
         <div className="rounds-list">
-          {timedRounds.map((round, ri) => (
-            <div key={round.round} className="round-card">
-              <div className="round-header">
-                <span className="round-number">R{round.round}</span>
-                <div className="round-time-info">
-                  {round.hasWarmup && (
-                    <span className="warmup-badge">
-                      {round.warmupStart} 熱身
-                    </span>
-                  )}
-                  <span className="time-badge">
-                    {round.matchStart} 開始
-                  </span>
-                </div>
-              </div>
-              {round.hasWarmup && (
-                <div className="warmup-note">
-                  首次上場：{round.newTeams.join('、')}
-                </div>
-              )}
-              <div className="round-matches">
-                {round.matches.map((match, mi) => {
-                  const matchIndex = ri * 2 + mi
-                  const scoreData = scoreMap[matchIndex]
-                  const hasScore = scoreData && scoreData.score
-                  const winner = getWinner(scoreData?.score)
+          {timedRounds.map((round, ri) => {
+            const roundHasSelected = selectedTeam && round.matches.some(
+              (m) => m.team1 === selectedTeam || m.team2 === selectedTeam
+            )
+            const roundDimmed = selectedTeam && !roundHasSelected
 
-                  return (
-                    <div key={mi} className={`match-row ${hasScore ? 'has-score' : ''}`}>
-                      <span className="court-label">{match.court}</span>
-                      <span className={`match-team left ${winner === 'team1' ? 'team-won' : winner === 'team2' ? 'team-lost' : ''}`}>
-                        <TypeBadge type={match.team1Type} />
-                        {match.team1}
+            return (
+              <div key={round.round} className={`round-card${roundDimmed ? ' round-card--dimmed' : ''}`}>
+                <div className="round-header">
+                  <span className="round-number">R{round.round}</span>
+                  <div className="round-time-info">
+                    {round.hasWarmup && (
+                      <span className="warmup-badge">
+                        {round.warmupStart} 熱身
                       </span>
-                      <div className="match-score-area">
-                        {isAdmin && updateScore ? (
-                          <ScoreInput
-                            matchIndex={matchIndex}
-                            currentScore={scoreData?.score}
-                            onSubmit={updateScore}
-                          />
-                        ) : hasScore ? (
-                          <ScoreDisplay score={scoreData.score} />
-                        ) : (
-                          <span className="match-vs">VS</span>
-                        )}
+                    )}
+                    <span className="time-badge">
+                      {round.matchStart} 開始
+                    </span>
+                  </div>
+                </div>
+                {round.hasWarmup && (
+                  <div className="warmup-note">
+                    首次上場：{round.newTeams.join('、')}
+                  </div>
+                )}
+                <div className="round-matches">
+                  {round.matches.map((match, mi) => {
+                    const matchIndex = ri * 2 + mi
+                    const scoreData = scoreMap[matchIndex]
+                    const hasScore = scoreData && scoreData.score
+                    const winner = getWinner(scoreData?.score)
+                    const matchHasSelected = selectedTeam && (match.team1 === selectedTeam || match.team2 === selectedTeam)
+                    const matchDimmed = selectedTeam && !matchHasSelected
+
+                    return (
+                      <div key={mi} className={`match-row ${hasScore ? 'has-score' : ''}${matchHasSelected ? ' match-row--active' : ''}${matchDimmed ? ' match-row--dimmed' : ''}`}>
+                        <span className="court-label">{match.court}</span>
+                        <span
+                          className={`match-team left team-clickable ${winner === 'team1' ? 'team-won' : winner === 'team2' ? 'team-lost' : ''}${selectedTeam === match.team1 ? ' team-selected' : ''}`}
+                          onClick={() => handleTeamClick(match.team1)}
+                        >
+                          <TypeBadge type={match.team1Type} />
+                          {match.team1}
+                        </span>
+                        <div className="match-score-area">
+                          {isAdmin && updateScore ? (
+                            <ScoreInput
+                              matchIndex={matchIndex}
+                              currentScore={scoreData?.score}
+                              onSubmit={updateScore}
+                            />
+                          ) : hasScore ? (
+                            <ScoreDisplay score={scoreData.score} />
+                          ) : (
+                            <span className="match-vs">VS</span>
+                          )}
+                        </div>
+                        <span
+                          className={`match-team right team-clickable ${winner === 'team2' ? 'team-won' : winner === 'team1' ? 'team-lost' : ''}${selectedTeam === match.team2 ? ' team-selected' : ''}`}
+                          onClick={() => handleTeamClick(match.team2)}
+                        >
+                          {match.team2}
+                          <TypeBadge type={match.team2Type} />
+                        </span>
                       </div>
-                      <span className={`match-team right ${winner === 'team2' ? 'team-won' : winner === 'team1' ? 'team-lost' : ''}`}>
-                        {match.team2}
-                        <TypeBadge type={match.team2Type} />
-                      </span>
-                    </div>
-                  )
-                })}
+                    )
+                  })}
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
 

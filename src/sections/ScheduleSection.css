@@ -515,6 +515,38 @@
   margin-top: -20px;
 }
 
+/* Team selection highlight/dim */
+.team-clickable {
+  cursor: pointer;
+  border-radius: 6px;
+  padding: 2px 6px;
+  margin: -2px -6px;
+  transition: all 0.3s ease;
+}
+.team-clickable:hover {
+  background: rgba(0, 240, 255, 0.08);
+}
+
+.team-selected {
+  color: var(--color-primary);
+  text-shadow: 0 0 8px var(--color-primary-glow);
+}
+
+.round-card {
+  transition: opacity 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.round-card--dimmed {
+  opacity: 0.3;
+}
+
+.match-row--active {
+  background: rgba(0, 240, 255, 0.06);
+}
+
+.match-row--dimmed {
+  opacity: 0.3;
+}
+
 @media (max-width: 768px) {
   .rounds-list { grid-template-columns: 1fr; }
   .finals-bracket { grid-template-columns: 1fr; }
