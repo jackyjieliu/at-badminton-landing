@@ -1,11 +1,13 @@
 .tournament-page {
   position: relative;
   z-index: 1;
+  padding-bottom: 40vh;
 }
 
 .section {
   position: relative;
   padding: var(--section-padding) 24px;
+  scroll-margin-top: 80px;
 }
 
 .section:nth-child(even) {

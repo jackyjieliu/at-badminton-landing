@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import './ScheduleSection.css'
 
@@ -7,6 +7,15 @@ const MATCH_MINUTES = 8
 const START_HOUR = 10
 const START_MINUTE = 0
 const GROUP_MATCH_COUNT = 20 // 10 rounds × 2 matches
+
+function getWinner(score) {
+  if (!score) return null
+  const [s1, s2] = score.split(':').map(Number)
+  if (isNaN(s1) || isNaN(s2)) return null
+  if (s1 > s2) return 'team1'
+  if (s2 > s1) return 'team2'
+  return null
+}
 
 function formatTime(totalMinutes) {
   const h = Math.floor(totalMinutes / 60)
@@ -85,10 +94,11 @@ function computeStandings(rounds, scoreMap) {
       stats[match.team2].pointsFor += s2
       stats[match.team2].pointsLost += s1
 
-      if (scoreData.winner === '對戰組A') {
+      const winner = getWinner(scoreData.score)
+      if (winner === 'team1') {
         stats[match.team1].wins++
         stats[match.team2].losses++
-      } else if (scoreData.winner === '對戰組B') {
+      } else if (winner === 'team2') {
         stats[match.team2].wins++
         stats[match.team1].losses++
       }
@@ -101,16 +111,21 @@ function computeStandings(rounds, scoreMap) {
   })
 }
 
-function ScoreInput({ matchIndex, currentScore, onSubmit }) {
-  const [s1, s2] = (currentScore || '').split(':').map(Number)
-  const [score1, setScore1] = useState(isNaN(s1) ? '' : s1)
-  const [score2, setScore2] = useState(isNaN(s2) ? '' : s2)
+function ScoreInput({ matchIndex, currentScore, onSubmit, extraData }) {
+  const [score1, setScore1] = useState('')
+  const [score2, setScore2] = useState('')
   const [saving, setSaving] = useState(false)
+
+  useEffect(() => {
+    const [s1, s2] = (currentScore || '').split(':').map(Number)
+    setScore1(isNaN(s1) ? '' : s1)
+    setScore2(isNaN(s2) ? '' : s2)
+  }, [currentScore])
 
   const handleSubmit = async () => {
     if (score1 === '' || score2 === '') return
     setSaving(true)
-    await onSubmit(matchIndex, Number(score1), Number(score2))
+    await onSubmit(matchIndex, Number(score1), Number(score2), extraData)
     setSaving(false)
   }
 
@@ -146,15 +161,16 @@ function ScoreInput({ matchIndex, currentScore, onSubmit }) {
   )
 }
 
-function ScoreDisplay({ score, winner }) {
+function ScoreDisplay({ score }) {
   if (!score) return <span className="score-empty">-</span>
+  const winner = getWinner(score)
   return (
     <span className="score-display">
-      <span className={winner === '對戰組A' ? 'score-winner' : 'score-loser'}>
+      <span className={winner === 'team1' ? 'score-winner' : 'score-loser'}>
         {score.split(':')[0]}
       </span>
       <span className="score-separator">:</span>
-      <span className={winner === '對戰組B' ? 'score-winner' : 'score-loser'}>
+      <span className={winner === 'team2' ? 'score-winner' : 'score-loser'}>
         {score.split(':')[1]}
       </span>
     </span>
@@ -265,12 +281,12 @@ export default function ScheduleSection({ data, scores, updateScore }) {
                   const matchIndex = ri * 2 + mi
                   const scoreData = scoreMap[matchIndex]
                   const hasScore = scoreData && scoreData.score
-                  const winner = scoreData?.winner
+                  const winner = getWinner(scoreData?.score)
 
                   return (
                     <div key={mi} className={`match-row ${hasScore ? 'has-score' : ''}`}>
                       <span className="court-label">{match.court}</span>
-                      <span className={`match-team left ${winner === '對戰組A' ? 'team-won' : winner === '對戰組B' ? 'team-lost' : ''}`}>
+                      <span className={`match-team left ${winner === 'team1' ? 'team-won' : winner === 'team2' ? 'team-lost' : ''}`}>
                         <TypeBadge type={match.team1Type} />
                         {match.team1}
                       </span>
@@ -282,12 +298,12 @@ export default function ScheduleSection({ data, scores, updateScore }) {
                             onSubmit={updateScore}
                           />
                         ) : hasScore ? (
-                          <ScoreDisplay score={scoreData.score} winner={winner} />
+                          <ScoreDisplay score={scoreData.score} />
                         ) : (
                           <span className="match-vs">VS</span>
                         )}
                       </div>
-                      <span className={`match-team right ${winner === '對戰組B' ? 'team-won' : winner === '對戰組A' ? 'team-lost' : ''}`}>
+                      <span className={`match-team right ${winner === 'team2' ? 'team-won' : winner === 'team1' ? 'team-lost' : ''}`}>
                         {match.team2}
                         <TypeBadge type={match.team2Type} />
                       </span>
@@ -349,13 +365,13 @@ export default function ScheduleSection({ data, scores, updateScore }) {
             const finalTeam2 = top4[mi === 0 ? 1 : 3]?.name || match.team2
             const scoreData = scoreMap[finalMatchIndex]
             const hasScore = scoreData && scoreData.score
-            const winner = scoreData?.winner
+            const winner = getWinner(scoreData?.score)
 
             return (
               <div key={mi} className={`final-match ${mi === 0 ? 'championship' : ''}`}>
                 <div className="final-round">{match.round}</div>
                 <div className="final-teams">
-                  <div className={`final-team ${winner === '對戰組A' ? 'final-won' : winner === '對戰組B' ? 'final-lost' : ''}`}>
+                  <div className={`final-team ${winner === 'team1' ? 'final-won' : winner === 'team2' ? 'final-lost' : ''}`}>
                     <span className="seed">{allGroupMatchesPlayed ? finalTeam1 : match.team1}</span>
                   </div>
                   <div className="final-vs">
@@ -364,9 +380,10 @@ export default function ScheduleSection({ data, scores, updateScore }) {
                         matchIndex={finalMatchIndex}
                         currentScore={scoreData?.score}
                         onSubmit={updateScore}
+                        extraData={allGroupMatchesPlayed ? { team1: finalTeam1, team2: finalTeam2 } : undefined}
                       />
                     ) : hasScore ? (
-                      <ScoreDisplay score={scoreData.score} winner={winner} />
+                      <ScoreDisplay score={scoreData.score} />
                     ) : (
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path d="M18 8L22 12L18 16" />
@@ -374,7 +391,7 @@ export default function ScheduleSection({ data, scores, updateScore }) {
                       </svg>
                     )}
                   </div>
-                  <div className={`final-team ${winner === '對戰組B' ? 'final-won' : winner === '對戰組A' ? 'final-lost' : ''}`}>
+                  <div className={`final-team ${winner === 'team2' ? 'final-won' : winner === 'team1' ? 'final-lost' : ''}`}>
                     <span className="seed">{allGroupMatchesPlayed ? finalTeam2 : match.team2}</span>
                   </div>
                 </div>

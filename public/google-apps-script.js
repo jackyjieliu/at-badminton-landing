@@ -17,7 +17,6 @@ const DATA_END_ROW = 32;   // 到 K32 (預賽 20 場)
 const FINALS_START_ROW = 33; // 決賽從 row 33 開始
 const FINALS_END_ROW = 34;   // 2 場決賽
 const SCORE_COL = 10;       // J 欄 (比分)
-const WINNER_COL = 11;      // K 欄 (獲勝組別)
 const ROUND_COL = 6;        // F 欄 (Round)
 const COURT_COL = 7;        // G 欄 (場地)
 const TEAM1_COL = 8;        // H 欄 (對戰組A)
@@ -35,8 +34,7 @@ function doGet() {
       court: sheet.getRange(row, COURT_COL).getValue(),
       team1: sheet.getRange(row, TEAM1_COL).getValue(),
       team2: sheet.getRange(row, TEAM2_COL).getValue(),
-      score: sheet.getRange(row, SCORE_COL).getValue(),
-      winner: sheet.getRange(row, WINNER_COL).getValue(),
+      score: sheet.getRange(row, SCORE_COL).getDisplayValue(),
     });
   }
 
@@ -48,8 +46,7 @@ function doGet() {
       court: sheet.getRange(row, COURT_COL).getValue(),
       team1: sheet.getRange(row, TEAM1_COL).getValue(),
       team2: sheet.getRange(row, TEAM2_COL).getValue(),
-      score: sheet.getRange(row, SCORE_COL).getValue(),
-      winner: sheet.getRange(row, WINNER_COL).getValue(),
+      score: sheet.getRange(row, SCORE_COL).getDisplayValue(),
     });
   }
 
@@ -62,7 +59,7 @@ function doPost(e) {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
   const data = JSON.parse(e.postData.contents);
 
-  // data: { matchIndex: number, score: "15:10", winner: "對戰組A" | "對戰組B" }
+  // data: { matchIndex: number, score: "15:10" }
   // matchIndex 0-19 = 預賽 (rows 13-32), 20-21 = 決賽 (rows 33-34)
   var targetRow;
   if (data.matchIndex < 20) {
@@ -78,7 +75,14 @@ function doPost(e) {
   }
 
   sheet.getRange(targetRow, SCORE_COL).setValue(data.score);
-  sheet.getRange(targetRow, WINNER_COL).setValue(data.winner);
+
+  // 決賽時同時寫入隊伍名稱
+  if (data.team1) {
+    sheet.getRange(targetRow, TEAM1_COL).setValue(data.team1);
+  }
+  if (data.team2) {
+    sheet.getRange(targetRow, TEAM2_COL).setValue(data.team2);
+  }
 
   return ContentService
     .createTextOutput(JSON.stringify({ success: true }))

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 
-const REFRESH_INTERVAL = 30000 // 30 seconds
+const REFRESH_INTERVAL = 10000 // 10 seconds
 
 export default function useSheetScores(scriptUrl) {
   const [scores, setScores] = useState(null)
@@ -29,23 +29,26 @@ export default function useSheetScores(scriptUrl) {
     return () => clearInterval(intervalRef.current)
   }, [fetchScores])
 
-  const updateScore = useCallback(async (matchIndex, score1, score2) => {
+  const updateScore = useCallback(async (matchIndex, score1, score2, { team1, team2 } = {}) => {
     if (!scriptUrl) return
     const score = `${score1}:${score2}`
-    const winner = score1 > score2 ? '對戰組A' : score2 > score1 ? '對戰組B' : ''
 
     // Optimistic update
     setScores(prev => {
       if (!prev) return prev
       const next = [...prev]
-      next[matchIndex] = { ...next[matchIndex], score, winner }
+      next[matchIndex] = { ...next[matchIndex], score }
       return next
     })
+
+    const body = { matchIndex, score }
+    if (team1) body.team1 = team1
+    if (team2) body.team2 = team2
 
     try {
       await fetch(scriptUrl, {
         method: 'POST',
-        body: JSON.stringify({ matchIndex, score, winner }),
+        body: JSON.stringify(body),
       })
     } catch (err) {
       setError(err.message)
